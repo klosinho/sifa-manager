@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102b46">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SiFa Manager">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>SiFa Manager</title>
+<style>
+:root{--navy:#102b46;--blue:#1e527a;--green:#16845b;--bg:#f2f5f8;--line:#d9e1e8;--ink:#1b2935}
+*{box-sizing:border-box}body{margin:0;font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--navy);color:white;padding:18px 18px 14px;position:sticky;top:0;z-index:3}
+header h1{font-size:21px;margin:0 0 4px}header small{opacity:.8}
+nav{display:flex;gap:8px;overflow:auto;padding:10px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:67px;z-index:2}
+nav button,.btn{border:0;border-radius:9px;padding:10px 13px;background:#e8eef3;color:var(--navy);font-weight:650;white-space:nowrap}
+nav button.active,.primary{background:var(--blue);color:#fff}
+main{max-width:1100px;margin:auto;padding:16px}.panel{display:none}.panel.active{display:block}
+h2{font-size:21px;margin:8px 0 14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{background:white;border:1px solid var(--line);border-radius:13px;padding:15px;box-shadow:0 2px 8px #102b4610}
+.metric{font-size:28px;font-weight:750;color:var(--blue)}.muted{color:#647586;font-size:13px}
+label{display:block;font-weight:650;font-size:14px;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd6df;border-radius:8px;background:white;font:inherit}
+textarea{min-height:78px}form .btn{margin-top:12px}.item{padding:12px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.danger{background:#fae9e9;color:#9d2929}
+footer{text-align:center;color:#718091;padding:24px;font-size:12px}
+@media(min-width:700px){main{padding:24px}}
+</style>
+</head>
+<body>
+<header><h1>SiFa Manager</h1><small>Arbeitsschutz organisieren · dokumentieren · verbessern</small></header>
+<nav id="nav">
+<button class="active" data-tab="dashboard">Übersicht</button>
+<button data-tab="gb">Gefährdungsbeurteilung</button>
+<button data-tab="mass">Maßnahmen</button>
+<button data-tab="stoff">Gefahrstoffe</button>
+<button data-tab="mittel">Arbeitsmittel</button>
+<button data-tab="pruef">Prüfungen</button>
+<button data-tab="unter">Unterweisungen</button>
+<button data-tab="org">Organisation</button>
+<button data-tab="daten">Datensicherung</button>
+</nav>
+<main>
+<section id="dashboard" class="panel active">
+<h2>Dashboard</h2><div class="grid">
+<div class="card"><div class="muted">Gefährdungsbeurteilungen</div><div class="metric" id="nGb">0</div></div>
+<div class="card"><div class="muted">Offene Maßnahmen</div><div class="metric" id="nMass">0</div></div>
+<div class="card"><div class="muted">Gefahrstoffe</div><div class="metric" id="nStoff">0</div></div>
+<div class="card"><div class="muted">Arbeitsmittel</div><div class="metric" id="nMittel">0</div></div>
+</div><div class="card" style="margin-top:14px"><b>Arbeitsbereich</b><p class="muted">Verwalte zentrale Arbeitsschutzthemen an einem Ort. Die Daten bleiben zunächst lokal in diesem Browser.</p></div>
+</section>
+<section id="gb" class="panel"><h2>Gefährdungsbeurteilung</h2>
+<form id="gbForm"><label>Arbeitsbereich / Tätigkeit</label><input name="bereich" required placeholder="z. B. Reifenmontage"><label>Gefährdung</label><textarea name="gefahr" required placeholder="Gefährdung beschreiben"></textarea><label>Mögliche Folgen</label><textarea name="folgen"></textarea><label>Schutzmaßnahmen nach TOP</label><textarea name="top" placeholder="Technisch · Organisatorisch · Personenbezogen"></textarea><label>Verantwortlich</label><input name="verantwortlich"><label>Prüftermin</label><input name="termin" type="date"><button class="btn primary">Eintrag speichern</button></form><div id="gbList"></div></section>
+<section id="mass" class="panel"><h2>Maßnahmenmanagement</h2>
+<form id="massForm"><label>Maßnahme</label><input name="name" required><label>Priorität</label><select name="prio"><option>Hoch</option><option>Mittel</option><option>Niedrig</option></select><label>Verantwortlich</label><input name="owner"><label>Fällig am</label><input name="due" type="date"><button class="btn primary">Maßnahme speichern</button></form><div id="massList"></div></section>
+<section id="stoff" class="panel"><h2>Gefahrstoffverzeichnis</h2><form id="stoffForm"><label>Produkt / Gefahrstoff</label><input name="name" required><label>Gefahren / H-Sätze</label><textarea name="hazard"></textarea><label>Lagerort</label><input name="place"><label>Sicherheitsdatenblatt geprüft am</label><input name="date" type="date"><button class="btn primary">Gefahrstoff speichern</button></form><div id="stoffList"></div></section>
+<section id="mittel" class="panel"><h2>Arbeitsmittel</h2><form id="mittelForm"><label>Arbeitsmittel</label><input name="name" required><label>Standort / Inventarnummer</label><input name="place"><label>Prüfpflicht / Hinweise</label><textarea name="note"></textarea><button class="btn primary">Arbeitsmittel speichern</button></form><div id="mittelList"></div></section>
+<section id="pruef" class="panel"><h2>Prüfungen und Wartung</h2><form id="pruefForm"><label>Prüfgegenstand</label><input name="name" required><label>Prüfung / Umfang</label><input name="kind"><label>Nächster Termin</label><input name="date" type="date"><label>Prüfer / befähigte Person</label><input name="person"><button class="btn primary">Prüfung speichern</button></form><div id="pruefList"></div></section>
+<section id="unter" class="panel"><h2>Unterweisungen</h2><form id="unterForm"><label>Thema</label><input name="name" required><label>Zielgruppe</label><input name="group"><label>Termin</label><input name="date" type="date"><label>Verantwortlich</label><input name="person"><button class="btn primary">Unterweisung speichern</button></form><div id="unterList"></div></section>
+<section id="org" class="panel"><h2>Organisation und Leitfragen</h2><div class="grid" id="orgGrid"></div></section>
+<section id="daten" class="panel"><h2>Datensicherung</h2><div class="card"><p>Exportiere deine Einträge als JSON-Datei und bewahre sie an einem sicheren Ort auf.</p><button class="btn primary" id="export">Daten exportieren</button><label>Datensicherung wiederherstellen</label><input id="importFile" type="file" accept="application/json"><p class="muted">Achtung: Daten werden nur in diesem Browser gespeichert. Vor dem Löschen von Browserdaten immer exportieren.</p></div></section>
+</main><footer>SiFa Manager · Arbeitsversion · Keine Rechtsberatung und kein Ersatz für die betriebliche Gefährdungsbeurteilung.</footer>
+<script>
+const keys=['gb','mass','stoff','mittel','pruef','unter'];
+const load=k=>JSON.parse(localStorage.getItem('sifa_'+k)||'[]');
+const save=(k,v)=>localStorage.setItem('sifa_'+k,JSON.stringify(v));
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));});
+const labels={gb:['bereich','gefahr','folgen','top','verantwortlich','termin'],mass:['name','prio','owner','due'],stoff:['name','hazard','place','date'],mittel:['name','place','note'],pruef:['name','kind','date','person'],unter:['name','group','date','person']};
+function render(k){const el=document.getElementById(k+'List');if(!el)return;const data=load(k);el.innerHTML=data.map((o,i)=>'<div class="item"><b>'+esc(o.name||o.bereich)+'</b><div class="muted">'+labels[k].filter(x=>x!=='name'&&x!=='bereich').map(x=>esc(o[x]||'')).filter(Boolean).join(' · ')+'</div><div class="actions"><button class="btn danger" data-del="'+k+'" data-i="'+i+'">Löschen</button></div></div>').join('')||'<p class="muted">Noch keine Einträge vorhanden.</p>';el.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{let a=load(k);a.splice(+b.dataset.i,1);save(k,a);refresh();});}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+keys.forEach(k=>{const f=document.getElementById(k+'Form');f.onsubmit=e=>{e.preventDefault();const o=Object.fromEntries(new FormData(f));let a=load(k);a.unshift(o);save(k,a);f.reset();refresh();};});
+function refresh(){keys.forEach(render);document.getElementById('nGb').textContent=load('gb').length;document.getElementById('nMass').textContent=load('mass').length;document.getElementById('nStoff').textContent=load('stoff').length;document.getElementById('nMittel').textContent=load('mittel').length;}
+const topics=['Verantwortung und Führung','Organisation und Kommunikation','Gefährdungsbeurteilung','Unterweisung und Qualifikation','Arbeitsmedizinische Vorsorge','Erste Hilfe und Notfallorganisation','Brandschutz und Evakuierung','Arbeitsmittel und Maschinen','Gefahrstoffe und Biostoffe','Arbeitsstätten und Verkehrswege','Persönliche Schutzausrüstung','Ergonomie und physische Belastung','Psychische Belastung','Arbeitszeit und Alleinarbeit','Wirksamkeitskontrolle'];
+document.getElementById('orgGrid').innerHTML=topics.map(t=>'<div class="card"><b>'+t+'</b><p class="muted">Sind Zuständigkeiten, Regelungen und Nachweise festgelegt und aktuell?</p><textarea placeholder="Notizen / Handlungsbedarf"></textarea></div>').join('');
+document.getElementById('export').onclick=()=>{const data=Object.fromEntries(keys.map(k=>[k,load(k)]));const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sifa-manager-datensicherung.json';a.click();URL.revokeObjectURL(a.href);};
+document.getElementById('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());keys.forEach(k=>{if(Array.isArray(d[k]))save(k,d[k]);});refresh();alert('Datensicherung importiert.');}catch{alert('Datei konnte nicht gelesen werden.');}};
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+refresh();
+</script>
+</body></html>
